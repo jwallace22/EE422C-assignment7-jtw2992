@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="318.0" prefWidth="534.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="assignment7.Client">
+<VBox prefHeight="318.0" prefWidth="534.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="assignment7.Client">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -47,8 +54,8 @@
     </MenuBar>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="293.0" prefWidth="587.0" VBox.vgrow="ALWAYS">
       <children>
-            <TextField layoutX="81.0" layoutY="249.0" prefHeight="25.0" prefWidth="298.0" />
-            <Button layoutX="379.0" layoutY="249.0" mnemonicParsing="false" text="Place Bid" />
+            <TextField fx:id="bidAmountField" layoutX="81.0" layoutY="249.0" prefHeight="25.0" prefWidth="298.0" />
+            <Button fx:id="bidButton" layoutX="379.0" layoutY="249.0" onAction="#placeBid" mnemonicParsing="false" text="Place Bid" />
             <Label layoutX="335.0" layoutY="68.0" text="Current Bid: $" />
             <Label layoutX="335.0" layoutY="92.0" prefHeight="17.0" prefWidth="89.0" text="Current Winner:" />
             <Label fx:id="currentBid" layoutX="410.0" layoutY="68.0" prefHeight="17.0" prefWidth="89.0" text="no bids placed" />

@@ -1,5 +1,0 @@
-AppleWatch 500 4
-RunningShoes 50 10
-Pencil 1 5
-Jewelery 200 6
-Microphone 40 10

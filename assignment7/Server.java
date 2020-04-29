@@ -1,6 +1,4 @@
 package assignment7;
-import assignment7.ClientObserver;
-
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -36,12 +34,14 @@ public class Server extends Observable {
                 addObserver(writer);
                 System.out.println("got a connection");
             }
-        } catch (IOException e) {}
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void populateItems(){
         try {
-            myAuction = new Auction("C:/Users/jwall/Dropbox/College/EE 422C/Final Project/assignment7/src/assignment7/auctionItems.txt");
+            myAuction = new Auction("auctionItems.txt");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -64,6 +64,7 @@ public class Server extends Observable {
 			//TODO insert code here
             try {
                 String input = (String) reader.readObject();
+                System.out.println(input);
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {

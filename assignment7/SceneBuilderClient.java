@@ -1,8 +1,11 @@
+import javafx.application.Application;
+
 /*
  * Author: Vallath Nandakumar and the EE 422C Instructors
  * Date: April 20, 2020
  * This code is for starting  out your JavaFX application from SceneBuilder. It doesn't compile.
  */
+/**
 public class Client extends Application {
 
     ClientController controller;
@@ -38,3 +41,4 @@ public class Client extends Application {
 
     ClientController getController () { return controller; }
 }
+**/

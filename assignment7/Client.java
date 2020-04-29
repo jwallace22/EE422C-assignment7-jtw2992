@@ -10,11 +10,11 @@ import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import sun.plugin2.message.Message;
-import sun.plugin2.message.Serializer;
 
 
 import java.io.IOException;
@@ -28,17 +28,33 @@ public class Client extends Application {
 	@FXML private Label currentBid;
 	@FXML private Label currentWinner;
 	@FXML private Label feedback;
+	@FXML private Button bidButton;
+	@FXML private TextField bidAmountField;
 	public static int numUsers = 0;
 	private String clientID;
 	// I/O streams
-	ObjectOutputStream toServer = null; 
-	ObjectInputStream fromServer = null;
+	private ObjectOutputStream toServer;
+	private ObjectInputStream fromServer;
 
 	public Client(){
 		clientID = "user00"+String.valueOf(numUsers);
 		numUsers++;
 	}
 
+	public synchronized boolean placeBid(){
+		Double bid = Double.valueOf(bidAmountField.getText());
+		System.out.println(bid.toString());
+		try {
+			System.out.println(toServer);
+			toServer.writeUTF(bid.toString());
+			toServer.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (NullPointerException e){
+			System.out.println("error processing:" +bid.toString());
+		}
+		return true;
+	}
 	@Override
 	public void start(Stage primaryStage) {
 		BorderPane mainPane = new BorderPane();
@@ -47,27 +63,24 @@ public class Client extends Application {
 		Scene scene = new Scene(mainPane, 450, 200);
 		primaryStage.setTitle("Client"); // Set the stage title 
 		try {
-			primaryStage.setScene(new Scene(FXMLLoader.load(getClass().getResource("clientwindow.fxml")),1200,600)); // Place the scene in the stage
+			primaryStage.setScene(new Scene(FXMLLoader.load(getClass().getResource("clientWindow.fxml")),1200,600)); // Place the scene in the stage
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		primaryStage.show(); // Display the stage 
-
-		//XX.setOnAction(e -> {
-		//});  // etc.
-
+		primaryStage.show(); // Display the stage
 		try { 
 			// Create a socket to connect to the server 
 			@SuppressWarnings("resource")
-			Socket socket = new Socket("localhost", 8000);
+			Socket socket = new Socket("localhost", 5000);
 
 			// Create an input stream to receive data from the server 
 			fromServer = new ObjectInputStream(socket.getInputStream());
 
 			// Create an output stream to send data to the server 
 			toServer = new ObjectOutputStream(socket.getOutputStream());
-		} 
+		}
 		catch (IOException ex) {
+			ex.printStackTrace();
 		}
 	}
 	
