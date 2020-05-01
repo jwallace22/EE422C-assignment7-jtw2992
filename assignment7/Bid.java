@@ -23,6 +23,6 @@ public class Bid implements Serializable {
     }
     @Override
     public String toString(){
-        return clientID + myBid.toString() + itemID;
+        return clientID +" "+ myBid.toString() +" "+ itemID;
     }
 }

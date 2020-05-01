@@ -34,6 +34,8 @@ public class Client extends Application {
 	@FXML private TextField bidAmountField;
 	public static int numUsers = 0;
 	private String clientID;
+	private static boolean waitingForFeedback = false;
+	private static boolean successfulBid = false;
 	private static ArrayList<Bid> newBids = new ArrayList<>();
 	public Client(){
 		clientID = "user00"+String.valueOf(numUsers);
@@ -41,12 +43,16 @@ public class Client extends Application {
 	}
 	@FXML
 	public void placeBid(){
-		feedback.setText("testing");
+		feedback.setText("");
 		try{
 			Double bid = Double.valueOf(bidAmountField.getText());
-			newBids.add(new Bid(clientID,bid,"insertItemID"));
+			newBids.add(new Bid(clientID,bid,"RunningShoes"));
 			currentBid.setText(bid.toString());
 			currentWinner.setText(clientID);
+			waitingForFeedback=true;
+			while(waitingForFeedback){Thread.sleep(1000);System.out.println(waitingForFeedback);}
+			if(successfulBid){feedback.setText("Bid placed. You are the current winner!");}
+			else {feedback.setText("Invalid Bid. Please try again!");}
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -95,32 +101,26 @@ public class Client extends Application {
 			@Override
 			public void run() {
 				String input;
-				try {
-					input = fromServer.readUTF();
-					System.out.println("From server: " + input);
-					if(input.equals("success")){
-						setFeedback("Bid placed. You are the current winner!");
+				while (true) {
+					try {
+						input = fromServer.readUTF();
+						System.out.println("From server: " + input);
+						if (input.equals("success")) {
+							successfulBid=true;
+						} else {
+							successfulBid=false;
+						}
+						setWaitingForFeedback(false);
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
-					else{
-						setFeedback("Invalid Bid. Please try again!");
-					}
-				}
-				catch (Exception e){
-					e.printStackTrace();
 				}
 			}
 		});
 		writerThread.start();
 		readerThread.start();
 	}
-	protected void setFeedback(String message){
-		try {
-			feedback.setText(message);
-		}
-		catch(NullPointerException e){
-			System.out.println("NullPointer on Line 119");
-		}
-	}
+	private void setWaitingForFeedback(boolean value){waitingForFeedback=value;}
 	public static void main(String[] args) {
 		launch(args);
 	}

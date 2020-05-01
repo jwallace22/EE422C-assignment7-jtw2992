@@ -22,6 +22,15 @@ public class Auction extends Observable{
         for(Item m : myItems) {threads.add(new ItemThread(m));}
         for(Thread t : threads){t.start();}
     }
+    public boolean processBid(Bid newBid){
+        for(Item i : myItems){
+            if(i.getID().equals(newBid.getItemID())){
+                return i.placeBid(newBid);
+            }
+        }
+        System.out.println("ItemID not valid for this Bid: "+newBid.toString());
+        return false;
+    }
     private class Item extends Observable {
         protected String ID;
         private double currentBid = 0;
@@ -33,17 +42,18 @@ public class Auction extends Observable{
             timeLimit=time;
             currentBid=min;
         }
+        public String getID(){return ID;}
         public double getCurrentBid(){
             return currentBid;
         }
         public String getOwner(){
             return owner;
         }
-        public boolean placeBid(double amount, String bidder){
-            if(amount <= currentBid){return false;}
+        public boolean placeBid(Bid newBid){
+            if(newBid.getBid() <= currentBid){return false;}
             else{
-                currentBid = amount;
-                owner = bidder;
+                currentBid = newBid.getBid();
+                owner = newBid.getClientID();
                 return true;
             }
         }

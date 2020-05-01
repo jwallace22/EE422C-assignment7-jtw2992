@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="318.0" prefWidth="534.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="assignment7.Client">
+<VBox prefHeight="318.0" prefWidth="534.0" xmlns="http://javafx.com/javafx/8.0.241" xmlns:fx="http://javafx.com/fxml/1" fx:controller="assignment7.Client">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>

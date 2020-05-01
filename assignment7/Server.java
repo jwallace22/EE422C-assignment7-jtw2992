@@ -64,20 +64,19 @@ public class Server extends Observable {
         }
 
         public void run() {
-            try {
-                Bid newBid = ((Bid)reader.readObject());
-                writer.writeUTF("message recieved");
-                System.out.println(newBid);
-                if(newBid.getBid()>5.0){
-                    writer.writeObject(true);
-                    System.out.println("good bid");
+            while (true) {
+                try {
+                    Bid newBid = ((Bid) reader.readObject());
+                    System.out.println(newBid);
+                    if (myAuction.processBid(newBid)) {
+                        writer.writeUTF("success");
+                    } else {
+                        writer.writeUTF("failed");
+                    }
+                    writer.flush();
+                } catch(Exception e){
+                    e.printStackTrace();
                 }
-                else{
-                    writer.writeObject(false);
-                    System.out.println("too low");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         }
     } // end of class ClientHandler
