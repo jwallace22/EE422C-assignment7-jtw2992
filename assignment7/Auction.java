@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Scanner;
 
-public class Auction {
+public class Auction extends Observable{
     private ArrayList<Item> myItems = new ArrayList<>();
     ArrayList<ItemThread> threads = new ArrayList<>();
     public Auction(String fileName) throws Exception{
@@ -19,9 +19,7 @@ public class Auction {
     }
 
     public void startAuction(){
-        for(Item m : myItems){
-            threads.add(new ItemThread(m));
-        }
+        for(Item m : myItems) {threads.add(new ItemThread(m));}
         for(Thread t : threads){t.start();}
     }
     private class Item extends Observable {

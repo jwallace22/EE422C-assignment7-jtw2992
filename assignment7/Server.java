@@ -6,6 +6,7 @@ import java.util.Observable;
 
 /*
  * Author: Vallath Nandakumar and the EE 422C instructors.
+ * Edited by: Jeffrey Wallace - jtw2992
  * Data: April 20, 2020
  * This starter code assumes that you are using an Observer Design Pattern and the appropriate Java library
  * classes.  Also using Message objects instead of Strings for socket communication.
@@ -20,6 +21,7 @@ public class Server extends Observable {
         server = new Server();
         server.populateItems();
         server.SetupNetworking();
+        myAuction.startAuction();
     }
 
     private void SetupNetworking() {
@@ -55,19 +57,26 @@ public class Server extends Observable {
 			Socket sock = clientSocket;
             try {
                 reader = new ObjectInputStream(sock.getInputStream());
+                this.writer = writer;//new ClientObserver(clientSocket.getOutputStream());
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
         public void run() {
-			//TODO insert code here
             try {
-                String input = (String) reader.readObject();
-                System.out.println(input);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
+                Bid newBid = ((Bid)reader.readObject());
+                writer.writeUTF("message recieved");
+                System.out.println(newBid);
+                if(newBid.getBid()>5.0){
+                    writer.writeObject(true);
+                    System.out.println("good bid");
+                }
+                else{
+                    writer.writeObject(false);
+                    System.out.println("too low");
+                }
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

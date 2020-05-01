@@ -61,7 +61,7 @@
             <Label fx:id="currentBid" layoutX="410.0" layoutY="68.0" prefHeight="17.0" prefWidth="89.0" text="no bids placed" />
             <Label fx:id="currentWinner" layoutX="424.0" layoutY="92.0" prefHeight="17.0" prefWidth="89.0" text="no bids placed" />
             <ImageView fitHeight="210.0" fitWidth="304.0" layoutX="14.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true" />
-            <Label fx:id="feedback" layoutX="81.0" layoutY="227.0" prefHeight="17.0" prefWidth="298.0" />
+            <Label fx:id="feedback" layoutX="81.0" layoutY="227.0" prefHeight="17.0" prefWidth="298.0" text=""/>
       </children>
     </AnchorPane>
   </children>

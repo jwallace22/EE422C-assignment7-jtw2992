@@ -13,6 +13,11 @@ public class ClientObserver extends ObjectOutputStream implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-
+        try {
+            this.writeObject(arg);
+            this.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
