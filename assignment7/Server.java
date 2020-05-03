@@ -21,7 +21,6 @@ public class Server extends Observable {
         server = new Server();
         server.populateItems();
         server.SetupNetworking();
-        myAuction.startAuction();
     }
 
     private void SetupNetworking() {
@@ -35,6 +34,8 @@ public class Server extends Observable {
                 t.start();
                 addObserver(writer);
                 System.out.println("got a connection");
+                writer.writeObject(myAuction);
+                writer.flush();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -69,9 +70,13 @@ public class Server extends Observable {
                     Bid newBid = ((Bid) reader.readObject());
                     System.out.println(newBid);
                     if (myAuction.processBid(newBid)) {
-                        writer.writeUTF("success");
+                        writer.writeObject(new String("success"));
+                        writer.flush();
+                        setChanged();
+                        notifyObservers(newBid);
+                        clearChanged();
                     } else {
-                        writer.writeUTF("failed");
+                        writer.writeObject(new String("failed"));
                     }
                     writer.flush();
                 } catch(Exception e){

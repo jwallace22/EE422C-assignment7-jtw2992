@@ -6,25 +6,30 @@ package assignment7;
  * It doesn't compile.
  */
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 
+import java.awt.event.TextEvent;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class Client extends Application {
+
+public class Client extends Application{
 	// I/O streams 
 	ObjectOutputStream toServer = null; 
 	ObjectInputStream fromServer = null;
@@ -32,30 +37,42 @@ public class Client extends Application {
 	@FXML private Label currentWinner;
 	@FXML private Label feedback;
 	@FXML private TextField bidAmountField;
-	public static int numUsers = 0;
-	private String clientID;
+	@FXML private ChoiceBox currentItemDropdown;
+	private static String clientID;
 	private static boolean waitingForFeedback = false;
 	private static boolean successfulBid = false;
 	private static ArrayList<Bid> newBids = new ArrayList<>();
-	public Client(){
-		clientID = "user00"+String.valueOf(numUsers);
-		numUsers++;
-	}
+	private static ArrayList<Item> items = new ArrayList<>();
+	private String currentItem = null;
 	@FXML
 	public void placeBid(){
+		if(currentItem==null){return;}
 		feedback.setText("");
 		try{
 			Double bid = Double.valueOf(bidAmountField.getText());
-			newBids.add(new Bid(clientID,bid,"RunningShoes"));
-			currentBid.setText(bid.toString());
-			currentWinner.setText(clientID);
+			newBids.add(new Bid(clientID,bid,currentItem));
 			waitingForFeedback=true;
-			while(waitingForFeedback){Thread.sleep(1000);System.out.println(waitingForFeedback);}
-			if(successfulBid){feedback.setText("Bid placed. You are the current winner!");}
+			while(waitingForFeedback){Thread.sleep(100);}
+			if(successfulBid){
+				feedback.setText("Bid placed. You are the current winner!");
+				currentBid.setText(bid.toString());
+				currentWinner.setText(clientID);
+			}
 			else {feedback.setText("Invalid Bid. Please try again!");}
 		}
 		catch(Exception e){
 			e.printStackTrace();
+		}
+	}
+	@FXML
+	public void changeCurrentItem(){
+		if(currentItemDropdown.getSelectionModel().isEmpty()){return;}
+		currentItem = (String) currentItemDropdown.getValue();
+		for(Item i:items){
+			if (i.getID().equals(currentItem)) {
+				currentWinner.setText(i.getOwner());
+				currentBid.setText(String.valueOf(i.getCurrentBid()));
+			}
 		}
 	}
 	@Override
@@ -68,12 +85,45 @@ public class Client extends Application {
 			fromServer = new ObjectInputStream(socket.getInputStream());
 			// Create an output stream to send data to the server
 			toServer = new ObjectOutputStream(socket.getOutputStream());
+
+			items = ((Auction)fromServer.readObject()).getAuctionItems();
 			// Create a scene and place it in the stage
+			Pane startPane = new Pane();
+			startPane.setPrefSize(600, 400);
+			Button startButton = new Button("Login");
+			startButton.setLayoutX(77);
+			startButton.setLayoutY(150);
+			startButton.setTextAlignment(TextAlignment.CENTER);
+			startButton.setFont(Font.font("Arial Black", 12));
+			TextField username = new TextField("username");
+			TextField password = new TextField("password");
+			username.setLayoutX(77);
+			password.setLayoutX(77);
+			username.setLayoutY(50);
+			password.setLayoutY(100);
+			startButton.setOnAction(event -> {
+				try {
+					clientID=username.getText();
+					FXMLLoader loader=new FXMLLoader();
+					loader.setLocation(getClass().getResource("clientWindow.fxml"));
+					primaryStage.setScene(new Scene(loader.load(),1200,600)); // Place the scene in the stage
+					ObservableList<String> options = FXCollections.observableArrayList();
+					for(Item i:items){
+						options.add(i.getID());
+					}
+					((Client)loader.getController()).setDropdown(options);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
+			startPane.getChildren().add(username);
+			startPane.getChildren().add(password);
+			startPane.getChildren().add(startButton);
+			primaryStage.setScene(new Scene(startPane, 300,200));
 			primaryStage.setTitle("Client"); // Set the stage title
-			primaryStage.setScene(new Scene(FXMLLoader.load(getClass().getResource("clientWindow.fxml")),1200,600)); // Place the scene in the stage
 			primaryStage.show(); // Display the stage
 		}
-		catch (IOException ex) {
+		catch (IOException | ClassNotFoundException ex) {
 			ex.printStackTrace();
 		}
 		Thread writerThread = new Thread(new Runnable() {
@@ -100,17 +150,27 @@ public class Client extends Application {
 		Thread readerThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				String input;
+				Object input;
 				while (true) {
 					try {
-						input = fromServer.readUTF();
+						input = fromServer.readObject();
 						System.out.println("From server: " + input);
 						if (input.equals("success")) {
 							successfulBid=true;
-						} else {
+							setWaitingForFeedback(false);
+						} else if(input.equals("failed")){
 							successfulBid=false;
+							setWaitingForFeedback(false);
+						} else {
+							Bid newBid = (Bid)input;
+							for(Item i:items){
+								if(newBid.getItemID().equals(i.ID)){
+									i.setCurrentBid(newBid.getBid());
+									i.setOwner(newBid.getClientID());
+									System.out.println(i.getCurrentBid());
+								}
+							}
 						}
-						setWaitingForFeedback(false);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -119,6 +179,10 @@ public class Client extends Application {
 		});
 		writerThread.start();
 		readerThread.start();
+
+	}
+	public void setDropdown(ObservableList e){
+		currentItemDropdown.getItems().addAll(e);
 	}
 	private void setWaitingForFeedback(boolean value){waitingForFeedback=value;}
 	public static void main(String[] args) {

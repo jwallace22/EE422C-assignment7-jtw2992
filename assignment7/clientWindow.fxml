@@ -1,67 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="318.0" prefWidth="534.0" xmlns="http://javafx.com/javafx/8.0.241" xmlns:fx="http://javafx.com/fxml/1" fx:controller="assignment7.Client">
+<VBox prefHeight="318.0" prefWidth="562.0" xmlns="http://javafx.com/javafx/8.0.241" xmlns:fx="http://javafx.com/fxml/1" fx:controller="assignment7.Client">
   <children>
-    <MenuBar VBox.vgrow="NEVER">
-      <menus>
-        <Menu mnemonicParsing="false" text="File">
-          <items>
-            <MenuItem mnemonicParsing="false" text="New" />
-            <MenuItem mnemonicParsing="false" text="Open…" />
-            <Menu mnemonicParsing="false" text="Open Recent" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Close" />
-            <MenuItem mnemonicParsing="false" text="Save" />
-            <MenuItem mnemonicParsing="false" text="Save As…" />
-            <MenuItem mnemonicParsing="false" text="Revert" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Preferences…" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Quit" />
-          </items>
-        </Menu>
-        <Menu mnemonicParsing="false" text="Edit">
-          <items>
-            <MenuItem mnemonicParsing="false" text="Undo" />
-            <MenuItem mnemonicParsing="false" text="Redo" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Cut" />
-            <MenuItem mnemonicParsing="false" text="Copy" />
-            <MenuItem mnemonicParsing="false" text="Paste" />
-            <MenuItem mnemonicParsing="false" text="Delete" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Select All" />
-            <MenuItem mnemonicParsing="false" text="Unselect All" />
-          </items>
-        </Menu>
-        <Menu mnemonicParsing="false" text="Help">
-          <items>
-            <MenuItem mnemonicParsing="false" text="About MyHelloApp" />
-          </items>
-        </Menu>
-      </menus>
-    </MenuBar>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="293.0" prefWidth="587.0" VBox.vgrow="ALWAYS">
       <children>
             <TextField fx:id="bidAmountField" layoutX="81.0" layoutY="249.0" prefHeight="25.0" prefWidth="298.0" />
-            <Button fx:id="bidButton" layoutX="379.0" layoutY="249.0" onAction="#placeBid" mnemonicParsing="false" text="Place Bid" />
-            <Label layoutX="335.0" layoutY="68.0" text="Current Bid: $" />
-            <Label layoutX="335.0" layoutY="92.0" prefHeight="17.0" prefWidth="89.0" text="Current Winner:" />
-            <Label fx:id="currentBid" layoutX="410.0" layoutY="68.0" prefHeight="17.0" prefWidth="89.0" text="no bids placed" />
-            <Label fx:id="currentWinner" layoutX="424.0" layoutY="92.0" prefHeight="17.0" prefWidth="89.0" text="no bids placed" />
+            <Button fx:id="bidButton" layoutX="384.0" layoutY="246.0" mnemonicParsing="false" onAction="#placeBid" text="Place Bid" />
+            <Label layoutX="337.0" layoutY="138.0" text="Current Bid: $" />
+            <Label layoutX="337.0" layoutY="162.0" prefHeight="18.0" prefWidth="98.0" text="Current Winner:" />
+            <Label fx:id="currentBid" layoutX="417.0" layoutY="138.0" prefHeight="17.0" prefWidth="89.0" text="no bids placed" />
+            <Label fx:id="currentWinner" layoutX="435.0" layoutY="162.0" prefHeight="17.0" prefWidth="89.0" text="no bids placed" />
             <ImageView fitHeight="210.0" fitWidth="304.0" layoutX="14.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true" />
-            <Label fx:id="feedback" layoutX="81.0" layoutY="227.0" prefHeight="17.0" prefWidth="298.0" text=""/>
+            <Label fx:id="feedback" layoutX="81.0" layoutY="227.0" prefHeight="17.0" prefWidth="298.0" text="" />
+            <ChoiceBox fx:id="currentItemDropdown" layoutX="329.0" layoutY="65.0" prefHeight="28.0" prefWidth="138.0" />
+            <Label layoutX="329.0" layoutY="39.0" prefHeight="18.0" prefWidth="98.0" text="Open Auctions:" />
+            <Button fx:id="itemSelectButton" layoutX="470.0" layoutY="63.0" minWidth="53.0" mnemonicParsing="false" onAction="#changeCurrentItem" prefHeight="32.0" prefWidth="53.0" text="select" />
       </children>
     </AnchorPane>
   </children>
