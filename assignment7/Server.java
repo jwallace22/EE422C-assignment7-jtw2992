@@ -70,7 +70,7 @@ public class Server extends Observable {
             while (true) {
                 try {
                     Bid newBid = ((Bid) reader.readObject());
-                    System.out.println(newBid);
+                    //System.out.println(newBid);
                     if (myAuction.processBid(newBid)) {
                         writer.writeObject(new String(newBid.getClientID()+" success"));
                         writer.flush();

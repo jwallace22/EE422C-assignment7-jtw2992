@@ -56,8 +56,6 @@ public class Client extends Application{
 			while(waitingForFeedback){Thread.sleep(100);}
 			if(successfulBid){
 				feedback.setText("Bid placed. You are the current winner!");
-				currentBid.setText(bid.toString());
-				currentWinner.setText(clientID);
 			}
 			else {feedback.setText("Invalid Bid. Please try again!");}
 		}
@@ -155,7 +153,7 @@ public class Client extends Application{
 				while (true) {
 					try {
 						input = fromServer.readObject();
-						System.out.println("From server: " + input);
+						//System.out.println("From server: " + input);
 						if (input.equals(clientID+" success")) {
 							successfulBid=true;
 							setWaitingForFeedback(false);
@@ -169,7 +167,9 @@ public class Client extends Application{
 									if (newBid.getItemID().equals(i.ID)) {
 										i.setCurrentBid(newBid.getBid());
 										i.setOwner(newBid.getClientID());
-										System.out.println(i.getCurrentBid());
+										currentBid.setText(String.valueOf(newBid.getBid()));
+										currentWinner.setText(newBid.getClientID());
+										//System.out.println(i.getCurrentBid());
 									}
 								}
 							}
