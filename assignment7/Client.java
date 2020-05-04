@@ -25,6 +25,7 @@ import java.awt.event.TextEvent;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -80,7 +81,7 @@ public class Client extends Application{
 		try {
 			// Create a socket to connect to the server
 			@SuppressWarnings("resource")
-			Socket socket = new Socket("localhost", 5000);
+			Socket socket = new Socket("192.168.1.125", 5000);
 			// Create an input stream to receive data from the server
 			fromServer = new ObjectInputStream(socket.getInputStream());
 			// Create an output stream to send data to the server
