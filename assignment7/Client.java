@@ -6,6 +6,7 @@ package assignment7;
  * It doesn't compile.
  */
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -39,6 +40,7 @@ public class Client extends Application{
 	@FXML private Label feedback;
 	@FXML private TextField bidAmountField;
 	@FXML private ChoiceBox currentItemDropdown;
+	private static FXMLLoader loader;
 	private static String clientID;
 	private static boolean waitingForFeedback = false;
 	private static boolean successfulBid = false;
@@ -103,7 +105,7 @@ public class Client extends Application{
 			startButton.setOnAction(event -> {
 				try {
 					clientID=username.getText();
-					FXMLLoader loader=new FXMLLoader();
+					loader=new FXMLLoader();
 					loader.setLocation(getClass().getResource("clientWindow.fxml"));
 					primaryStage.setScene(new Scene(loader.load(),1200,600)); // Place the scene in the stage
 					ObservableList<String> options = FXCollections.observableArrayList();
@@ -167,8 +169,12 @@ public class Client extends Application{
 									if (newBid.getItemID().equals(i.ID)) {
 										i.setCurrentBid(newBid.getBid());
 										i.setOwner(newBid.getClientID());
-										currentBid.setText(String.valueOf(newBid.getBid()));
-										currentWinner.setText(newBid.getClientID());
+										Platform.runLater(new Runnable(){
+											@Override
+											public void run(){
+											((Client)loader.getController()).updateScreen(i);
+											}
+										});
 										//System.out.println(i.getCurrentBid());
 									}
 								}
@@ -186,6 +192,10 @@ public class Client extends Application{
 	}
 	public void setDropdown(ObservableList e){
 		currentItemDropdown.getItems().addAll(e);
+	}
+	private void updateScreen(Item item){
+		currentBid.setText(String.valueOf(item.getCurrentBid()));
+		currentWinner.setText(item.getOwner());
 	}
 	private void setWaitingForFeedback(boolean value){waitingForFeedback=value;}
 	public static void main(String[] args) {
