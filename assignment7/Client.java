@@ -156,19 +156,21 @@ public class Client extends Application{
 					try {
 						input = fromServer.readObject();
 						System.out.println("From server: " + input);
-						if (input.equals("success")) {
+						if (input.equals(clientID+" success")) {
 							successfulBid=true;
 							setWaitingForFeedback(false);
-						} else if(input.equals("failed")){
+						} else if(input.equals(clientID+" failed")){
 							successfulBid=false;
 							setWaitingForFeedback(false);
 						} else {
-							Bid newBid = (Bid)input;
-							for(Item i:items){
-								if(newBid.getItemID().equals(i.ID)){
-									i.setCurrentBid(newBid.getBid());
-									i.setOwner(newBid.getClientID());
-									System.out.println(i.getCurrentBid());
+							if(input instanceof Bid) {
+								Bid newBid = (Bid) input;
+								for (Item i : items) {
+									if (newBid.getItemID().equals(i.ID)) {
+										i.setCurrentBid(newBid.getBid());
+										i.setOwner(newBid.getClientID());
+										System.out.println(i.getCurrentBid());
+									}
 								}
 							}
 						}

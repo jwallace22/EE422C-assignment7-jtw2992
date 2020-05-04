@@ -72,13 +72,13 @@ public class Server extends Observable {
                     Bid newBid = ((Bid) reader.readObject());
                     System.out.println(newBid);
                     if (myAuction.processBid(newBid)) {
-                        writer.writeObject(new String("success"));
+                        writer.writeObject(new String(newBid.getClientID()+" success"));
                         writer.flush();
                         setChanged();
                         notifyObservers(newBid);
                         clearChanged();
                     } else {
-                        writer.writeObject(new String("failed"));
+                        writer.writeObject(new String(newBid.getClientID()+" failed"));
                     }
                     writer.flush();
                 } catch(Exception e){
