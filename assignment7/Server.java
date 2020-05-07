@@ -1,9 +1,6 @@
 package assignment7;
 import java.io.*;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.Observable;
 
 /*
@@ -72,16 +69,18 @@ public class Server extends Observable {
                     Bid newBid = ((Bid) reader.readObject());
                     //System.out.println(newBid);
                     if (myAuction.processBid(newBid)) {
-                        writer.writeObject(new String(newBid.getClientID()+" success"));
+                        writer.writeObject(new String(newBid.getClientID() + " success"));
                         writer.flush();
                         setChanged();
                         notifyObservers(newBid);
                         clearChanged();
                     } else {
-                        writer.writeObject(new String(newBid.getClientID()+" failed"));
+                        writer.writeObject(new String(newBid.getClientID() + " failed"));
                     }
                     writer.flush();
-                } catch(Exception e){
+                }catch(SocketException e){
+                    System.out.println("Connection lost");
+                }catch(Exception e){
                     e.printStackTrace();
                 }
             }
