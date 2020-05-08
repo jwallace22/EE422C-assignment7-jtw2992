@@ -52,6 +52,9 @@ public class Server extends Observable {
     private void populateItems(){
         try {
             myAuction = new Auction("auctionItems.txt");
+            for(Item i:myAuction.getAuctionItems()){
+                System.out.println(i.getDescription());
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

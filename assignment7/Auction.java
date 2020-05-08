@@ -15,7 +15,9 @@ public class Auction extends Observable implements Serializable {
         Scanner scanner = new Scanner(file);
         while(scanner.hasNextLine()){
             String[] line = scanner.nextLine().split(" ");
-            myItems.add(new Item(line[0],Double.valueOf(line[1]),Integer.valueOf(line[2])));
+            String description = "";
+            for(int i = 3;i<line.length;i++){description=description+" "+line[i];}
+            myItems.add(new Item(line[0],Double.valueOf(line[1]),Integer.valueOf(line[2]),description));
         }
     }
     public boolean processBid(Bid newBid){
