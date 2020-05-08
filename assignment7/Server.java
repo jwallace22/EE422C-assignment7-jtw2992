@@ -15,9 +15,11 @@ import java.util.Observable;
 public class Server extends Observable {
     private static Auction myAuction;
     static Server server;
+    private static UserDatabase users;
 
     public static void main (String [] args) {
         server = new Server();
+        server.populateUserDatabase();
         server.populateItems();
         server.SetupNetworking();
     }
@@ -40,7 +42,13 @@ public class Server extends Observable {
             e.printStackTrace();
         }
     }
-
+    private void populateUserDatabase() {
+        try {
+            users = new UserDatabase("approvedUsers.txt");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
     private void populateItems(){
         try {
             myAuction = new Auction("auctionItems.txt");
