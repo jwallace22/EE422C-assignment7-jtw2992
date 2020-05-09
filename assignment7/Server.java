@@ -1,6 +1,7 @@
 package assignment7;
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.Observable;
 
 /*
@@ -16,6 +17,8 @@ public class Server extends Observable {
     private static Auction myAuction;
     static Server server;
     private static UserDatabase users;
+    private ArrayList<ClientObserver> myClients=new ArrayList<>();
+    private static ObjectInputStream reader;
 
     public static void main (String [] args) {
         server = new Server();
@@ -30,15 +33,17 @@ public class Server extends Observable {
             ServerSocket ss = new ServerSocket(port);
             while (true) {
                 Socket clientSocket = ss.accept();
-                ClientObserver writer = new ClientObserver(clientSocket.getOutputStream(),);
+                ClientObserver writer = new ClientObserver(clientSocket.getOutputStream());
                 Thread t = new Thread(new ClientHandler(clientSocket, writer));
                 t.start();
-                addObserver(writer);
-                System.out.println("got a connection");
                 writer.writeObject(myAuction);
+                while(writer.getClientID()==null){Thread.sleep(1000);}//waiting to recieve username and password
+                addObserver(writer);
+                myClients.add(writer);
+                System.out.println("got a connection");
                 writer.flush();
             }
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
@@ -57,7 +62,7 @@ public class Server extends Observable {
         }
     }
     class ClientHandler implements Runnable {
-        private ObjectInputStream reader;
+        private boolean initialized = false;
         private  ClientObserver writer; // See Canvas. Extends ObjectOutputStream, implements Observer
         Socket clientSocket;
 
@@ -72,22 +77,69 @@ public class Server extends Observable {
         }
 
         public void run() {
+            while(!initialized){
+                try {
+                    String input = (String) reader.readObject();
+                    String username = input.split(" ")[0];
+                    String password = input.split(" ")[1];
+                    if(users.verifyUser(username,password)){
+                        writer.writeObject("Login success");
+                        initialized=true;
+                        writer.setClientID(username);
+                    } else {
+                        writer.writeObject("Invalid Login");
+                    }
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } catch (Exception e){
+                    try {
+                        reader.close();
+                    }
+                    catch (IOException r){
+                        r.printStackTrace();
+                    }
+                }
+
+            }
             while (true) {
                 try {
-                    Bid newBid = ((Bid) reader.readObject());
-                    //System.out.println(newBid);
-                    if (myAuction.processBid(newBid)) {
-                        writer.writeObject(new String(newBid.getClientID() + " success"));
+                    Object input = reader.readObject();
+                    System.out.println(input);
+                    Bid newBid;
+                    if(input instanceof Bid) {
+                        newBid = (Bid) input;
+                        if (myAuction.processBid(newBid)) {
+                            writer.writeObject(new String(newBid.getClientID() + " success"));
+                            writer.flush();
+                            setChanged();
+                            notifyObservers(newBid);
+                            clearChanged();
+                        } else {
+                            writer.writeObject(new String(newBid.getClientID() + " failed"));
+                        }
                         writer.flush();
-                        setChanged();
-                        notifyObservers(newBid);
-                        clearChanged();
-                    } else {
-                        writer.writeObject(new String(newBid.getClientID() + " failed"));
                     }
-                    writer.flush();
-                }catch(SocketException e){
+                    else{
+                        //recieved exit message from client. handling gracefully to prevent errors
+                        String message = (String) input;
+                        if(message.split(" ")[1].equals("exit")){
+                            for(ClientObserver o : myClients){
+                                if(o.getClientID().equals(message.split(" ")[0])){
+                                    deleteObserver(o);
+                                    myClients.remove(o);
+                                }
+                            }
+                        }
+                        writer.writeObject(message.split(" ")[0]+" "+"STL");//stl = safe to leave
+                    }
+                }catch(SocketException | EOFException e){
                     System.out.println("Connection lost");
+                    try {
+                        reader.close();
+                    }
+                    catch (IOException r){
+                        r.printStackTrace();
+                    }
                 }catch(Exception e){
                     e.printStackTrace();
                 }

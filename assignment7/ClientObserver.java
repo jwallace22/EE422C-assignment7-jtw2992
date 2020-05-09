@@ -7,10 +7,9 @@ import java.util.Observable;
 import java.util.Observer;
 
 public class ClientObserver extends ObjectOutputStream implements Observer {
-    private String clientID;
-    public ClientObserver(OutputStream out, String id) throws IOException {
+    private String clientID = null;
+    public ClientObserver(OutputStream out) throws IOException {
         super(out);
-        clientID=id;
     }
 
     @Override
@@ -22,4 +21,6 @@ public class ClientObserver extends ObjectOutputStream implements Observer {
             e.printStackTrace();
         }
     }
+    public void setClientID(String id){clientID=id;}
+    public String getClientID(){return clientID;}
 }
