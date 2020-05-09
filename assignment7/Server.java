@@ -30,7 +30,7 @@ public class Server extends Observable {
             ServerSocket ss = new ServerSocket(port);
             while (true) {
                 Socket clientSocket = ss.accept();
-                ClientObserver writer = new ClientObserver(clientSocket.getOutputStream());
+                ClientObserver writer = new ClientObserver(clientSocket.getOutputStream(),);
                 Thread t = new Thread(new ClientHandler(clientSocket, writer));
                 t.start();
                 addObserver(writer);

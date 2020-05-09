@@ -7,8 +7,10 @@ import java.util.Observable;
 import java.util.Observer;
 
 public class ClientObserver extends ObjectOutputStream implements Observer {
-    public ClientObserver(OutputStream out) throws IOException {
+    private String clientID;
+    public ClientObserver(OutputStream out, String id) throws IOException {
         super(out);
+        clientID=id;
     }
 
     @Override
