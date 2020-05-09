@@ -101,7 +101,7 @@ public class Server extends Observable {
                 }
 
             }
-            while (true) {
+            while (myClients.size()>0) {
                 try {
                     Object input = reader.readObject();
                     System.out.println(input);
@@ -127,10 +127,10 @@ public class Server extends Observable {
                                 if(o.getClientID().equals(message.split(" ")[0])){
                                     deleteObserver(o);
                                     myClients.remove(o);
+                                    writer.writeObject(message.split(" ")[0]+" stl");//stl = safe to leave
                                 }
                             }
                         }
-                        writer.writeObject(message.split(" ")[0]+" "+"STL");//stl = safe to leave
                     }
                 }catch(SocketException | EOFException e){
                     System.out.println("Connection lost");
