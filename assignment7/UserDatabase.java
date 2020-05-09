@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class UserDatabase {
     private HashMap<String, UserData> myDatabase = new HashMap<String,UserData>();
     UserDatabase(String fileName) throws FileNotFoundException{
-        File file = new File(getClass().getResource(fileName).toString().replace("file:/",""));
+        File file = new File(getClass().getResource(fileName).toString().replace("file:",""));
         Scanner scanner = null;
         scanner = new Scanner(file);
         while(scanner.hasNextLine()){

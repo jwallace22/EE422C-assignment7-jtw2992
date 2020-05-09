@@ -11,7 +11,7 @@ public class Auction extends Observable implements Serializable {
     private int AuctionVersion = 0;
     private ArrayList<Item> myItems = new ArrayList<>();
     public Auction(String fileName) throws Exception{
-        File file = new File(getClass().getResource(fileName).toString().replace("file:/",""));
+        File file = new File(getClass().getResource(fileName).toString().replace("file:",""));
         Scanner scanner = new Scanner(file);
         while(scanner.hasNextLine()){
             String[] line = scanner.nextLine().split(" ");
