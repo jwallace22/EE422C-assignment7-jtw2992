@@ -1,5 +1,5 @@
 AppleWatch 500 400 A brand new 2020 series 5 Apple Watch with Sport Band included.
-RunningShoes 50 1000 Nike S-5s, size 12 men's
-LawnMower 1 500 Used Lawn Mower. 5 years old and still in good condition. Gas powered.
+RunningShoes 50 25 Nike S-5s, size 12 men's
+LawnMower 100 500 Used Lawn Mower. 5 years old and still in good condition. Gas powered.
 Jewelery 200 600 My great-grandmother's pearl necklace found when cleaning out her house.
 Microphone 40 1000 Openbox HyperX Quadcast USB-microphone. Only used for 1 month.
