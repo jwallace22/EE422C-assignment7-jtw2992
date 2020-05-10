@@ -3,15 +3,11 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.Observable;
-
-/*
- * Author: Vallath Nandakumar and the EE 422C instructors.
- * Edited by: Jeffrey Wallace - jtw2992
- * Data: April 20, 2020
- * This starter code assumes that you are using an Observer Design Pattern and the appropriate Java library
- * classes.  Also using Message objects instead of Strings for socket communication.
- * See the starter code for the Chat Program on Canvas.  
- * This code does not compile.
+/**  EE422C Final Project submission by
+ * Jeffrey Wallace
+ * jtw2992
+ * 16310
+ * Spring 2020
  */
 public class Server extends Observable {
     private static Auction myAuction;

@@ -4,7 +4,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Scanner;
-
+/**  EE422C Final Project submission by
+ * Jeffrey Wallace
+ * jtw2992
+ * 16310
+ * Spring 2020
+ */
 public class UserDatabase {
     private HashMap<String, UserData> myDatabase = new HashMap<String,UserData>();
     UserDatabase(String fileName) throws FileNotFoundException{
