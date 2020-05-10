@@ -89,6 +89,7 @@ public class Server extends Observable {
                     } else {
                         writer.writeObject("Invalid Login");
                     }
+                    writer.flush();
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 } catch (Exception e){
@@ -101,10 +102,10 @@ public class Server extends Observable {
                 }
 
             }
-            while (myClients.size()>0) {
+            boolean continueRead = true;
+            while (continueRead) {
                 try {
                     Object input = reader.readObject();
-                    System.out.println(input);
                     Bid newBid;
                     if(input instanceof Bid) {
                         newBid = (Bid) input;
@@ -120,14 +121,16 @@ public class Server extends Observable {
                         writer.flush();
                     }
                     else{
-                        //recieved exit message from client. handling gracefully to prevent errors
+                        //received exit message from client. handling gracefully to prevent errors
                         String message = (String) input;
                         if(message.split(" ")[1].equals("exit")){
-                            for(ClientObserver o : myClients){
+                            for(int i = 0;i<myClients.size();i++){
+                                ClientObserver o = myClients.get(i);
                                 if(o.getClientID().equals(message.split(" ")[0])){
                                     deleteObserver(o);
                                     myClients.remove(o);
                                     writer.writeObject(message.split(" ")[0]+" stl");//stl = safe to leave
+                                    writer.flush();
                                 }
                             }
                         }
@@ -143,6 +146,7 @@ public class Server extends Observable {
                 }catch(Exception e){
                     e.printStackTrace();
                 }
+                continueRead=myClients.size()>0;
             }
         }
     } // end of class ClientHandler
