@@ -90,13 +90,12 @@ public class Server extends Observable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            this.writer = writer;//new ClientObserver(clientSocket.getOutputStream());
+            this.writer = writer;
         }
 
         public void run() {
             boolean continueRead = true;
             while (continueRead) {
-                //synchronized (reader) {
                     Object input = null;
                     try {
                         input = reader.readObject();
@@ -166,8 +165,19 @@ public class Server extends Observable {
                             e.printStackTrace();
                         }
                         continueRead = myClients.size() > 0;
+                        if(myClients.size()==0){
+                            //closes out the program so that the jar files dont run indefinitely.
+                            try {
+                                writer.close();
+                                reader.close();
+                                clientSocket.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            System.exit(0);
+                        }
                     }
-                //}
+
             }
 
         }
