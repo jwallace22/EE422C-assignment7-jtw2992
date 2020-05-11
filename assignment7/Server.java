@@ -93,29 +93,30 @@ public class Server extends Observable {
 
         public void run() {
             while(!initialized){
+                Object response = null;
                 try {
-                    String input = (String) reader.readObject();
-                    String username = input.split(" ")[0];
-                    String password = input.split(" ")[1];
-                    if(users.verifyUser(username,password)){
-                        writer.writeObject("Login success");
-                        initialized=true;
-                        writer.setClientID(username);
-                    } else {
-                        writer.writeObject("Invalid Login");
-                    }
-                    writer.flush();
+                    response = reader.readObject();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
-                } catch (Exception e){
+                }
+                if((response instanceof String)&&((String)response).split(" ")[0].equals("login")){
                     try {
-                        reader.close();
-                    }
-                    catch (IOException r){
-                        r.printStackTrace();
+                        String username = ((String)response).split(" ")[1];
+                        String password = ((String)response).split(" ")[2];
+                        if(users.verifyUser(username,password)){
+                            writer.writeObject("Login success");
+                            initialized=true;
+                            writer.setClientID(username);
+                        } else {
+                            writer.writeObject("Login failed");
+                        }
+                        writer.flush();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
-
             }
             boolean continueRead = true;
             while (continueRead) {
