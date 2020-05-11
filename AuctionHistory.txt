@@ -1,0 +1,4 @@
+******** New Auction Started ********
+michael bid $51.56 on RunningShoes.
+michael bid $501.68 on AppleWatch.
+michael bid $101.56 on LawnMower.
