@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Client/Client.iml" filepath="$PROJECT_DIR$/Client/Client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/EE422C-assignment7-jtw2992/Client/Client.iml" filepath="$PROJECT_DIR$/EE422C-assignment7-jtw2992/Client/Client.iml" />
       <module fileurl="file://$PROJECT_DIR$/EE422C-assignment7-jtw2992/EE422C-assignment7-jtw2992.iml" filepath="$PROJECT_DIR$/EE422C-assignment7-jtw2992/EE422C-assignment7-jtw2992.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Server/Server.iml" filepath="$PROJECT_DIR$/Server/Server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/EE422C-assignment7-jtw2992/Server/Server.iml" filepath="$PROJECT_DIR$/EE422C-assignment7-jtw2992/Server/Server.iml" />
     </modules>
   </component>
 </project>
