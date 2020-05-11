@@ -247,3 +247,11 @@ michael bid $960.0 on AppleWatch.
 ******** New Auction Started ********
 ******** New Auction Started ********
 ******** New Auction Started ********
+******** New Auction Started ********
+jeff404 bid $600.0 on AppleWatch.
+jeff404 bid $956.0 on AppleWatch.
+******** New Auction Started ********
+jeff404 bid $600.0 on AppleWatch.
+michael bid $900.0 on AppleWatch.
+michael bid $152.0 on LawnMower.
+jeff404 bid $4750.0 on Truck.

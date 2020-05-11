@@ -170,7 +170,6 @@ public class Server extends Observable {
                             try {
                                 writer.close();
                                 reader.close();
-                                clientSocket.close();
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
