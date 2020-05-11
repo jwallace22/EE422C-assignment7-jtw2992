@@ -13,7 +13,7 @@ public class Server extends Observable {
     private static Auction myAuction;
     static Server server;
     private static UserDatabase users;
-    private ArrayList<ClientObserver> myClients=new ArrayList<>();
+    private static ArrayList<ClientObserver> myClients=new ArrayList<>();
     private static ObjectInputStream reader;
 
     public static void main (String [] args) {
@@ -91,82 +91,84 @@ public class Server extends Observable {
         public void run() {
             boolean continueRead = true;
             while (continueRead) {
-                Object input = null;
-                try {
-                    synchronized (reader) {
+                synchronized (reader) {
+                    Object input = null;
+                    try {
+
                         input = reader.readObject();
                         System.out.println(input);
-                    }
-                } catch(StreamCorruptedException e){
-                    System.out.print("read error.");
-                    try {
-                        Thread.sleep(1500);
-                    } catch (InterruptedException ex) {
-                        ex.printStackTrace();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-                if(!initialized) {
-                    
-                    if ((input instanceof String) && ((String) input).split(" ")[0].equals("login")) {
-                        try {
-                            String username = ((String) input).split(" ")[1];
-                            String password = ((String) input).split(" ")[2];
-                            if (users.verifyUser(username, password)) {
-                                writer.writeObject("Login success");
-                                initialized = true;
-                                writer.setClientID(username);
-                            } else {
-                                writer.writeObject("Login failed");
-                            }
-                            writer.flush();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                } else {
-                    try {
-                        if (input instanceof Bid) {
-                            Bid newBid = (Bid) input;
-                            if (myAuction.processBid(newBid)) {
-                                writer.writeObject(new String(newBid.getClientID() + " success"));
-                                writer.flush();
-                                updateLog(newBid);
-                                setChanged();
-                                notifyObservers(newBid);
-                                clearChanged();
-                            } else {
-                                writer.writeObject(new String(newBid.getClientID() + " failed"));
-                                writer.flush();
-                                System.out.println("bid failed");
-                            }
 
-                        } else if (input instanceof String) {
-                            //received exit message from client. handling gracefully to prevent errors
-                            String message = (String) input;
-                            if (message.split(" ").length > 1 && message.split(" ")[1].equals("exit")) {
-                                for (int i = 0; i < myClients.size(); i++) {
-                                    ClientObserver o = myClients.get(i);
-                                    if (o.getClientID().equals(message.split(" ")[0])) {
-                                        deleteObserver(o);
-                                        myClients.remove(o);
-                                        writer.writeObject(message.split(" ")[0] + " stl");//stl = safe to leave
-                                        writer.flush();
+                    } catch (StreamCorruptedException e) {
+                        System.out.print("read error.");
+                        try {
+                            Thread.sleep(1500);
+                        } catch (InterruptedException ex) {
+                            ex.printStackTrace();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    if (!initialized) {
+
+                        if ((input instanceof String) && ((String) input).split(" ")[0].equals("login")) {
+                            try {
+                                String username = ((String) input).split(" ")[1];
+                                String password = ((String) input).split(" ")[2];
+                                if (users.verifyUser(username, password)) {
+                                    writer.writeObject("Login success");
+                                    initialized = true;
+                                    writer.setClientID(username);
+                                } else {
+                                    writer.writeObject("Login failed");
+                                }
+                                writer.flush();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    } else {
+                        try {
+                            if (input instanceof Bid) {
+                                Bid newBid = (Bid) input;
+                                if (myAuction.processBid(newBid)) {
+                                    writer.writeObject(new String(newBid.getClientID() + " success"));
+                                    writer.flush();
+                                    updateLog(newBid);
+                                    setChanged();
+                                    notifyObservers(newBid);
+                                    clearChanged();
+                                } else {
+                                    writer.writeObject(new String(newBid.getClientID() + " failed"));
+                                    writer.flush();
+                                    System.out.println("bid failed");
+                                }
+
+                            } else if (input instanceof String) {
+                                //received exit message from client. handling gracefully to prevent errors
+                                String message = (String) input;
+                                if (message.split(" ").length > 1 && message.split(" ")[1].equals("exit")) {
+                                    for (int i = 0; i < myClients.size(); i++) {
+                                        ClientObserver o = myClients.get(i);
+                                        if (o.getClientID().equals(message.split(" ")[0])) {
+                                            deleteObserver(o);
+                                            myClients.remove(o);
+                                            writer.writeObject(message.split(" ")[0] + " stl");//stl = safe to leave
+                                            writer.flush();
+                                        }
                                     }
                                 }
                             }
+                        } catch (SocketException | EOFException e) {
+                            System.out.println("Connection lost");
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                    } catch (SocketException | EOFException e) {
-                        System.out.println("Connection lost");
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                        continueRead = myClients.size() > 0;
                     }
-                    continueRead = myClients.size() > 0;
                 }
-                }
+            }
 
         }
     } // end of class ClientHandler
