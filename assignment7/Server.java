@@ -14,7 +14,7 @@ public class Server extends Observable {
     static Server server;
     private static UserDatabase users;
     private static ArrayList<ClientObserver> myClients=new ArrayList<>();
-    private static ObjectInputStream reader;
+    //private static ObjectInputStream reader;
 
     public static void main (String [] args) {
         server = new Server();
@@ -31,7 +31,7 @@ public class Server extends Observable {
             while (true) {
                 Socket clientSocket = ss.accept();
                 ClientObserver writer = new ClientObserver(clientSocket.getOutputStream());
-                reader = new ObjectInputStream(clientSocket.getInputStream());
+                //reader = new ObjectInputStream(clientSocket.getInputStream());
                 Thread t = new Thread(new ClientHandler(clientSocket, writer));
                 t.start();
                 writer.writeObject(myAuction);
@@ -81,37 +81,35 @@ public class Server extends Observable {
         private boolean initialized = false;
         private  ClientObserver writer; // See Canvas. Extends ObjectOutputStream, implements Observer
         Socket clientSocket;
+        private ObjectInputStream reader;
 
         public ClientHandler(Socket clientSocket, ClientObserver writer) {
-			Socket sock = clientSocket;
-                //reader = new ObjectInputStream(sock.getInputStream());
-                this.writer = writer;//new ClientObserver(clientSocket.getOutputStream());
+            Socket sock = clientSocket;
+            try {
+                reader = new ObjectInputStream(sock.getInputStream());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            this.writer = writer;//new ClientObserver(clientSocket.getOutputStream());
         }
 
         public void run() {
             boolean continueRead = true;
             while (continueRead) {
-                synchronized (reader) {
+                //synchronized (reader) {
                     Object input = null;
                     try {
-
                         input = reader.readObject();
-                        System.out.println(input);
-
-                    } catch (StreamCorruptedException e) {
-                        System.out.print("read error.");
-                        try {
-                            Thread.sleep(1500);
-                        } catch (InterruptedException ex) {
-                            ex.printStackTrace();
-                        }
+                    } catch (StreamCorruptedException|SocketException e ) {
+                        System.out.println(writer.getClientID()+" disconnected.");
+                        myClients.remove(writer);
+                        break;
                     } catch (IOException e) {
                         e.printStackTrace();
                     } catch (ClassNotFoundException e) {
                         e.printStackTrace();
                     }
                     if (!initialized) {
-
                         if ((input instanceof String) && ((String) input).split(" ")[0].equals("login")) {
                             try {
                                 String username = ((String) input).split(" ")[1];
@@ -142,7 +140,6 @@ public class Server extends Observable {
                                 } else {
                                     writer.writeObject(new String(newBid.getClientID() + " failed"));
                                     writer.flush();
-                                    System.out.println("bid failed");
                                 }
 
                             } else if (input instanceof String) {
@@ -154,7 +151,10 @@ public class Server extends Observable {
                                         if (o.getClientID().equals(message.split(" ")[0])) {
                                             deleteObserver(o);
                                             myClients.remove(o);
+                                            continueRead=false;
+
                                             writer.writeObject(message.split(" ")[0] + " stl");//stl = safe to leave
+                                            reader.close();
                                             writer.flush();
                                         }
                                     }
@@ -167,7 +167,7 @@ public class Server extends Observable {
                         }
                         continueRead = myClients.size() > 0;
                     }
-                }
+                //}
             }
 
         }
