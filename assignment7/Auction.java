@@ -5,9 +5,7 @@ package assignment7;
  * 16310
  * Spring 2020
  */
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Scanner;
@@ -16,10 +14,12 @@ public class Auction extends Observable implements Serializable {
     private int AuctionVersion = 0;
     private ArrayList<Item> myItems = new ArrayList<>();
     public Auction(String fileName) throws Exception{
-        File file = new File(getClass().getResource(fileName).toString().replace("file:",""));
-        Scanner scanner = new Scanner(file);
-        while(scanner.hasNextLine()){
-            String[] line = scanner.nextLine().split(" ");
+        //File file = new File(getClass().getResource(fileName).toString().replace("file:",""));
+        BufferedReader scanner = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(fileName)));
+        //Scanner scanner = new Scanner(file);
+        String newLine = null;
+        while((newLine=scanner.readLine())!=null){
+            String[] line = newLine.split(" ");
             String description = "";
             for(int i = 3;i<line.length;i++){description=description+" "+line[i];}
             myItems.add(new Item(line[0],Double.valueOf(line[1]),Integer.valueOf(line[2]),description));

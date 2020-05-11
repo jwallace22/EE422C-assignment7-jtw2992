@@ -50,6 +50,8 @@ public class Server extends Observable {
             users = new UserDatabase("approvedUsers.txt");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     private void populateItems(){
