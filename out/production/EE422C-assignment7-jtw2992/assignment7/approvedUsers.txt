@@ -3,3 +3,7 @@ laptop 422C
 ronald swanson
 michael scott
 ryan abcd1234
+leslie knope
+uncle sam
+user1003 secretpassword
+student javaRocks

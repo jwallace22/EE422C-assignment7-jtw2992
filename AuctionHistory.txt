@@ -261,3 +261,13 @@ jeff404 bid $60.0 on Microphone.
 ryan bid $200.0 on LawnMower.
 ryan bid $200.5 on LawnMower.
 jeff404 bid $60.56 on Microphone.
+******** New Auction Started ********
+******** New Auction Started ********
+******** New Auction Started ********
+michael bid $150.0 on LawnMower.
+ronald bid $200.0 on LawnMower.
+student bid $5000.65 on Truck.
+jeff404 bid $5001.0 on Truck.
+michael bid $550.0 on AppleWatch.
+ronald bid $600.0 on AppleWatch.
+student bid $5002.0 on Truck.
